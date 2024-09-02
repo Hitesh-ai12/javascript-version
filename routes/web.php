@@ -12,7 +12,7 @@ Route::post('/leads', [LeadController::class, 'store']);
 
 // API routes
 Route::get('/items', [ItemController::class, 'index']);
-// Route::get('/items', [ItemController::class, 'index'])->name('items.index');
+
 Route::post('/api/items', [ItemController::class, 'store']);
 Route::put('/api/items/{id}', [ItemController::class, 'update']);
 
