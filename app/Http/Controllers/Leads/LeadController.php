@@ -16,19 +16,24 @@ class LeadController extends Controller
     public function store(Request $request)
     {
        
-
-        // Validate the incoming request
+    // Validate the incoming request
         $request->validate([
-            'full_name' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
             'email' => 'required|email',
             'phone' => 'required|string',
+            'tag' => 'nullable|string',
+            'stage' => 'nullable|string',
         ]);
 
         // Create a new Lead
         $lead = Lead::create([
-            'full_name' => $request->full_name,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
+            'tag' => $request->tag,
+            'stage' => $request->stage,
             'source' => 'direct',
         ]);
 

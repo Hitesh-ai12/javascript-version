@@ -124,7 +124,7 @@ import VerticalNavLink from '@layouts/components/VerticalNavLink.vue';
     <VerticalNavLink
       :item="{
         title: 'Signature',
-        to: '/api/leads',  // Corrected path
+        to: '/settings/signature',  // Corrected path
       }"
     />
     <VerticalNavLink

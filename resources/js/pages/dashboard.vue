@@ -27,7 +27,7 @@ const newProject = {
 
     <VCol
       cols="12"
-      md="8"
+      md="12"
     >
       <AnalyticsTransactions />
     </VCol>

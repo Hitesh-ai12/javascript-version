@@ -43,6 +43,10 @@ export const routes = [
       {
         path:'settings/tags-stages-sources',
         component:()=>import('@/pages/settings/tags-stages-sources.vue'),
+      },
+      {
+        path:'settings/signature',
+        component:()=>import('@/pages/settings/signature.vue'),
       }
     ],
   },
