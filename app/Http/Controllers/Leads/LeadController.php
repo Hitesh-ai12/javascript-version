@@ -21,9 +21,9 @@ class LeadController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email',
-            'phone' => 'required|string',
-            'tag' => 'nullable|string',
-            'stage' => 'nullable|string',
+            'phone' => 'required|regex:/^\d{10}$/',
+            'tag' => 'required|string', // Ensure this field is expected to be a string
+            'stage' => 'required|string', // Ensure this field is expected to be a string
         ]);
 
         // Create a new Lead
