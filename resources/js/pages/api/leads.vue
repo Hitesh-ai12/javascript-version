@@ -76,23 +76,24 @@
     <span v-if="errors.phone" class="error">{{ errors.phone }}</span>
   </label>
   <label>
-    Tag:
-    <select v-model="newLead.tag" required>
-      <option v-for="tag in tags" :key="tag.id" :value="tag.id">
-        {{ tag.name }}
-      </option>
-    </select>
-    <span v-if="errors.tag" class="error">{{ errors.tag }}</span>
-  </label>
-  <label>
-    Stage:
-    <select v-model="newLead.stage" required>
-      <option v-for="stage in stages" :key="stage.id" :value="stage.id">
-        {{ stage.name }}
-      </option>
-    </select>
-    <span v-if="errors.stage" class="error">{{ errors.stage }}</span>
-  </label>
+  Tag:
+  <select v-model="newLead.tag" required>
+    <option v-for="tag in tags" :key="tag.id" :value="tag.id">
+      {{ tag.name }}
+    </option>
+  </select>
+  <span v-if="errors.tag" class="error">{{ errors.tag }}</span>
+</label>
+
+<label>
+  Stage:
+  <select v-model="newLead.stage" required>
+    <option v-for="stage in stages" :key="stage.id" :value="stage.id">
+      {{ stage.name }}
+    </option>
+  </select>
+  <span v-if="errors.stage" class="error">{{ errors.stage }}</span>
+</label>
   <button type="submit" id="submit_button">Submit</button>
 </form>
 
@@ -328,6 +329,10 @@ export default {
       toast,
       getTagValue,
       getStageValue,
+      tags,
+      stages,
+      sources,
+      fetchItems,
     };
   },
 };
