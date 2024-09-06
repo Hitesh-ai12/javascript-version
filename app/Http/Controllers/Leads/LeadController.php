@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Leads;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Lead;
+use Illuminate\Support\Facades\Response;
+use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LeadMail;
 
 class LeadController extends Controller
 {
@@ -40,4 +44,75 @@ class LeadController extends Controller
         // Return the created Lead as a JSON response
         return response()->json($lead, 201);
     }
+
+      // Function to delete selected leads
+    public function deleteLeads(Request $request)
+    {
+        // selected leads IDs
+        $leadIds = $request->input('lead_ids');
+
+        // Perform deletion
+        Lead::whereIn('id', $leadIds)->delete();
+
+        return response()->json(['message' => 'Selected leads deleted successfully.']);
+    }
+
+    public function exportLeads(Request $request)
+{
+    $leadIds = $request->input('lead_ids');
+
+    // Retrieve the leads to be exported
+    $leads = Lead::whereIn('id', $leadIds)->get();
+
+    // Generate CSV
+    $csv = "ID, Name, Email, Phone\n";
+    foreach ($leads as $lead) {
+        $csv .= "{$lead->id}, {$lead->name}, {$lead->email}, {$lead->phone}\n";
+    }
+
+    $response = Response::make($csv);
+    $response->header('Content-Type', 'text/csv');
+    $response->header('Content-Disposition', 'attachment; filename="leads.csv"');
+
+    return $response;
+}
+
+
+public function sendSms(Request $request)
+{
+    $leadIds = $request->input('lead_ids');
+    $message = $request->input('message');
+
+    $leads = Lead::whereIn('id', $leadIds)->get();
+
+    $twilio = new Client(env('TWILIO_SID'), env('TWILIO_TOKEN'));
+
+    foreach ($leads as $lead) {
+        $twilio->messages->create(
+            $lead->phone,
+            [
+                'from' => env('TWILIO_PHONE_NUMBER'),
+                'body' => $message
+            ]
+        );
+    }
+
+    return response()->json(['success' => 'SMS sent successfully.']);
+}
+
+
+
+public function sendEmail(Request $request)
+{
+    $leadIds = $request->input('lead_ids');
+    $message = $request->input('message');
+
+    $leads = Lead::whereIn('id', $leadIds)->get();
+
+    foreach ($leads as $lead) {
+        Mail::to($lead->email)->send(new LeadMail($message));
+    }
+
+    return response()->json(['success' => 'Emails sent successfully.']);
+}
 }

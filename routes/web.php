@@ -10,6 +10,10 @@ use App\Http\Controllers\Settings\ItemController;
 Route::get('/leads', [LeadController::class, 'index']);
 Route::post('/leads', [LeadController::class, 'store']);
 
+Route::post('/leads/delete', [LeadController::class, 'deleteLeads']);
+Route::post('/leads/export', [LeadController::class, 'exportLeads']);
+
+
 // API routes
 Route::get('/items', [ItemController::class, 'index']);
 
