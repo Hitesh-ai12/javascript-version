@@ -497,10 +497,6 @@ input:focus-visible {
     cursor: pointer;
 }
 
-.submit-button:hover {
-    background-color: #218838;
-}
-
 .error-message {
     color: red;
     margin-top: 10px;
@@ -557,4 +553,175 @@ input:focus-visible {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+
+
+/*---------15/09/2024-------------*/
+
+/* Common Modal Overlay */
+.modal-overlay,
+.import-modal-overlay,
+.sms-modal-overlay,
+.tag-modal-overlay,
+.stage-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Common Modal Container */
+.modal-container,
+.import-modal-container,
+.sms-modal-container,
+.tag-modal-container,
+.stage-modal-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Modal Content */
+.import-options,
+.file-upload-container,
+.sms-modal-container,
+.tag-modal-container,
+.stage-modal-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+/* Specific Styles for Modal Content */
+.sms-modal-container textarea {
+    width: 100%;
+    height: 100px;
+    margin: 10px 0;
+}
+
+/* Common Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Common Modal Container */
+.modal-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+/* Modal Content */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.submit-button,
+.cancel-button {
+    background: #9268dd;
+    color: #0c0c0c;
+    border: none;
+    padding: 4px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+
+
+.cancel-button {
+    height: fit-content;
+    margin: 7px;
+}
+
+select.open_modal_drop-box {
+    width: 136px;
+    height: fit-content;
+    background-color: rgb(39, 128, 206);
+}
+
+.modal_tags {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+
+    .modal_tag {
+        display: flex;
+        align-items: center;
+    }
+
+    .modal_tag input {
+        margin-right: 5px;
+    }
+}
+
+.import-button,
+.submit-button,
+.add-button {
+    background: #a17de1;
+    color: #0e0d0d;
+    border: bisque;
+    padding: 7px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 7px 0px;
+}
+
+select#stage_id {
+    border: 1px solid #8c57ff;
+    border-radius: 5px;
 }

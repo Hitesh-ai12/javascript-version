@@ -188,18 +188,21 @@
     </div>
 <!-----------------------------06-09-2024-------------------------------------->
 
-  <!-- Tags Modal -->
-  <div v-if="showTagModal" class="tag-modal-overlay">
+    <!-- Tags Modal -->
+    <div v-if="showTagModal" class="tag-modal-overlay">
       <div class="tag-modal-container">
         <button type="button" @click="closeTagModal" class="close-button">X</button>
         <h3>Select Tags</h3>
-        <div v-for="tag in tags" :key="tag.id">
-          <input
-            type="checkbox"
-            :value="tag.id"
-            v-model="newLead.tag"
-          />
-          {{ tag.name }}
+        <div class="modal_tags">
+          <div v-for="tag in tags" :key="tag.id" class="modal_tag">
+            <input
+              type="checkbox"
+              :value="tag.id"
+              :checked="isTagSelected(tag.id)"
+              @change="toggleTagSelection(tag.id)"
+            />
+            {{ tag.name }}
+          </div>
         </div>
         <button @click="showAddTagInput = !showAddTagInput" class="add-button">Add Tag</button>
         <div v-if="showAddTagInput">
@@ -215,16 +218,18 @@
       <div class="stage-modal-container">
         <button type="button" @click="closeStageModal" class="close-button">X</button>
         <h3>Select Stage</h3>
-        <select v-model="newLead.stage">
-          <option v-for="stage in stages" :key="stage.id" :value="stage.id">
+
+     
+        <div v-if="showAddStageInput">
+          <input v-model="newStage" placeholder="Enter new stage" id="m_add_stage" class="m_add_stage"/>
+          <button @click="addStage" class="submit-button">Add</button>
+        </div>
+        <button @click="showAddStageInput = !showAddStageInput" class="add-button">Add Stage</button>
+        <select v-model="newLead.stage" id="stage_id" class="stage_class">
+          <option v-for="stage in stages" :key="stage.id" :value="stage.id" class="stage_values">
             {{ stage.name }}
           </option>
         </select>
-        <button @click="showAddStageInput = !showAddStageInput" class="add-button">Add Stage</button>
-        <div v-if="showAddStageInput">
-          <input v-model="newStage" placeholder="Enter new stage" />
-          <button @click="addStage" class="submit-button">Add</button>
-        </div>
         <button @click="closeStageModal" class="submit-button">Close</button>
       </div>
     </div>
@@ -251,7 +256,6 @@
     </div>
 <!------------------------------------------------------------------->
 
-
     <div v-if="!loading && !error">
       <div class="header">
         <input v-model="searchQuery" type="text" placeholder="Search leads by name..." class="search-bar" />
@@ -265,7 +269,6 @@
       </div>
     </div>
 
-    <!-- Create New Lead Form -->
     <div v-if="showForm" class="form-overlay">
       <div class="form-container">
         <button type="button" @click="showForm = false" id="cancel_button">X</button>
@@ -375,13 +378,12 @@
       <div v-if="filteredLeads.length === 0" class="no-leads">No leads available.</div>
     </div>
 
-    <!-- Toast Notification -->
     <div v-if="toast.message" :class="`toast ${toast.type}`">
       {{ toast.message }}
       <button @click="toast.message = ''" class="toast-close-button">X</button>
     </div>
 
-      <!-- Pagination Controls -->
+     
       <div>
 
 
@@ -430,6 +432,7 @@ export default {
     const modalOptions = ref([]);
     const selectedOption = ref(null);
     const modalType = ref('');
+    const selectedTags = ref(new Set());
     
     const showImportModal = ref(false);
     const showFileInput = ref(false);
@@ -462,6 +465,21 @@ export default {
     const closeModal = () => {
       showModal.value = false;
     };
+
+
+    //-  ---- - -- - Tag
+    const isTagSelected = (tagId) => {
+        return selectedTags.value.has(tagId);
+      };
+
+      const toggleTagSelection = (tagId) => {
+        if (selectedTags.value.has(tagId)) {
+          selectedTags.value.delete(tagId);
+        } else {
+          selectedTags.value.add(tagId);
+        }
+        newLead.value.tag = Array.from(selectedTags.value); // Update newLead.tag with selected tag IDs
+      };
 
     const submitAction = () => {
       // Handle the action for the selected option here
@@ -713,7 +731,7 @@ export default {
 
     const setPageSize = (size) => {
       pageSize.value = size;
-      currentPage.value = 1; // Reset to the first page when page size changes
+      currentPage.value = 1; 
     };
 
     const paginatedLeads = computed(() => {
@@ -831,37 +849,37 @@ export default {
     };
 
     const submitForm = async () => {
-      if (!validateForm()) {
-        return;
-      }
+        if (!validateForm()) {
+          return;
+        }
 
-      try {
-        const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
-        const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
+        try {
+          const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
+          const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '';
 
-        const response = await axios.post('/leads', {
-          first_name: newLead.value.first_name,
-          last_name: newLead.value.last_name,
-          email: newLead.value.email,
-          phone: newLead.value.phone,
-          tag: String(newLead.value.tag),
-          stage: String(newLead.value.stage),
-        }, {
-          headers: {
-            'X-CSRF-TOKEN': csrfToken,
-          },
-        });
+          const response = await axios.post('/leads', {
+            first_name: newLead.value.first_name,
+            last_name: newLead.value.last_name,
+            email: newLead.value.email,
+            phone: newLead.value.phone,
+            tag: Array.from(selectedTags.value), // Use selectedTags here
+            stage: String(newLead.value.stage),
+          }, {
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+            },
+          });
 
-        newLead.value = { id: 0, first_name: '', last_name: '', email: '', phone: '', tag: '', stage: '' };
-        showForm.value = false;
+          newLead.value = { id: 0, first_name: '', last_name: '', email: '', phone: '', tag: '', stage: '' };
+          showForm.value = false;
 
-        leads.value.push(response.data);
+          leads.value.push(response.data);
 
-        showToast('Lead created successfully!', 'success');
-      } catch (err) {
-        showToast('Failed to create lead.', 'error');
-      }
-    };
+          showToast('Lead created successfully!', 'success');
+        } catch (err) {
+          showToast('Failed to create lead.', 'error');
+        }
+      };
 
     const toggleSelectAll = (event) => {
       if (event.target.checked) {
@@ -943,166 +961,11 @@ export default {
       modalTitle,
       modalOptions,
       selectedOption,
-      
+      isTagSelected,
+      toggleTagSelection,
       closeModal,
      
     };
   },
 };
 </script>
-
-
-
-
-<style>
-/* Common Modal Overlay */
-.modal-overlay,
-.import-modal-overlay,
-.sms-modal-overlay,
-.tag-modal-overlay,
-.stage-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-/* Common Modal Container */
-.modal-container,
-.import-modal-container,
-.sms-modal-container,
-.tag-modal-container,
-.stage-modal-container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-/* Close Button */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-/* Modal Content */
-.import-options,
-.file-upload-container,
-.sms-modal-container,
-.tag-modal-container,
-.stage-modal-container {
-  display: flex;
-  flex-direction: column;
-}
-
-
-.import-button, .submit-button, .add-button {
-    background: #a17de1;
-    color: #0e0d0d;
-    border: bisque;
-    padding: 15px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 8px 0px;
-}
-
-/* .import-button:hover,
-.submit-button:hover,
-.add-button:hover {
-  background: #0056b3;
-} */
-
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
-/* Specific Styles for Modal Content */
-.sms-modal-container textarea {
-  width: 100%;
-  height: 100px;
-  margin: 10px 0;
-}
-/* Common Modal Overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-/* Common Modal Container */
-.modal-container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-/* Close Button */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-/* Modal Content */
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.submit-button, .cancel-button {
-    background: #9268dd;
-    color: #0c0c0c;
-    border: none;
-    padding: 4px 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: fit-content;
-}
-
-/* .submit-button:hover,
-.cancel-button:hover {
-  background: #0056b3;
-} */
-
-.cancel-button {
-  height: fit-content;
-  margin: 7px;
-}
-
-select.open_modal_drop-box {
-    width: 136px;
-    height: fit-content;
-    background-color: rgb(39, 128, 206);
-}
-</style>
