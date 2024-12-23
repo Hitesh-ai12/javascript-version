@@ -65,17 +65,17 @@ const login = async () => {
         <RouterLink to="/" class="d-flex align-center gap-3">
           <div class="d-flex" v-html="logo" />
           <h2 class="font-weight-medium text-2xl text-uppercase">
-            Materio
+            CRM
           </h2>
         </RouterLink>
       </VCardItem>
 
-      <VCardText class="pt-2">
+      <!--VCardText class="pt-2">
         <h4 class="text-h4 mb-1">Welcome to CRM! 👋🏻</h4>
         <p class="mb-0">
           Please sign-in to your account and start the adventure
         </p>
-      </VCardText>
+      </VCardText-->
 
       <VCardText>
         <VForm @submit.prevent="login">
@@ -116,19 +116,19 @@ const login = async () => {
             </VCol>
 
             <!-- Create account link -->
-            <VCol cols="12" class="text-center text-base">
+            <!--VCol cols="12" class="text-center text-base">
               <span>New on our platform?</span>
               <RouterLink class="text-primary ms-2" to="/auth/register">
                 Create an account
               </RouterLink>
-            </VCol>
+            </VCol-->
 
             <!-- Divider -->
-            <VCol cols="12" class="d-flex align-center">
+            <!--VCol cols="12" class="d-flex align-center">
               <VDivider />
               <span class="mx-4">or</span>
               <VDivider />
-            </VCol>
+            </VCol-->
           </VRow>
         </VForm>
       </VCardText>
